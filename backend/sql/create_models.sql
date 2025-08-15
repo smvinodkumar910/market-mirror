@@ -9,3 +9,4 @@ OPTIONS (ENDPOINT = 'text-embedding-005');
 CREATE OR REPLACE MODEL `{BQ_SILVER_DATASET}.gemini`
 REMOTE WITH CONNECTION `us.vertex-remote-models`
 OPTIONS (ENDPOINT = 'gemini-2.0-flash');
+
