@@ -1,7 +1,8 @@
 from google.cloud import bigquery
+import streamlit as st
 
-
-def get_review_data():
+@st.cache_data
+def get_review_summary():
     # Construct a BigQuery client object.
     client = bigquery.Client()
 
