@@ -40,3 +40,9 @@ app_genre
   )) as app_dtl from `market-mirror-dev.APP_MARKET_GOLD.T_APP_REVIEWS_AGG`
 group by app_genre;
 --where app_rank <= 15
+
+
+create or replace table `market-mirror-dev.APP_MARKET_GOLD.T_APP_REVIEWS_DETAIL`
+AS
+select r.app_genre, r.app_name, r.sentiment, ARRAY_AGG(r.review_text) review_text from `market-mirror-dev.APP_MARKET_SILVER.T_APP_REVIEWS_CLEANED` r
+group by r.app_genre, r.app_name, r.sentiment;
