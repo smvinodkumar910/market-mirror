@@ -1,4 +1,0 @@
-google-cloud-dataproc
-kagglehub
-google-cloud-storage
-google-cloud-bigquery
