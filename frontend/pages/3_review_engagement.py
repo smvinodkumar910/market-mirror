@@ -1,26 +1,21 @@
 import streamlit as st
 import pandas as pd
 
+from tools.read_data import  get_app_list_for_prompt, get_review_data
+st.set_page_config(layout="wide")
 
 st.sidebar.header("App Reviews")
 st.title("Review Engagement")
 
 
+get_app_list_for_prompt = get_app_list_for_prompt()
 
-# review_to_show = st.selectbox("Select a review to respond to:", df['review'])
+genre = st.sidebar.selectbox(label='Select App Category', options=get_app_list_for_prompt['app_genre'].unique().tolist())
 
-# st.subheader("Selected Review:")
-# st.write(review_to_show)
+app_name = st.sidebar.selectbox(label='Select App Name', options=get_app_list_for_prompt[get_app_list_for_prompt['app_genre']==genre]['app_name'].unique().tolist())
 
+review_sentiment = st.sidebar.selectbox(label='Select Review Sentiment', options=['Positive','Neutral','Negative'])
 
-# st.subheader("Your Response:")
-# response = st.text_area("Write your reply here")
+df = get_review_data(genre, app_name, review_sentiment)
 
-# if st.button("Submit Response"):
-#     if response:
-#         st.success("Response submitted successfully!")
-#         # Here you would typically save the response to your database
-#         st.write(f"Response to review: '{review_to_show}'")
-#         st.write(f"Your response: '{response}'")
-#     else:
-#         st.warning("Please write a response before submitting.")
+st.dataframe(df, use_container_width=True, hide_index=True)
