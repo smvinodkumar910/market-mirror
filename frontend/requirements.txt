@@ -6,3 +6,4 @@ db-dtypes
 matplotlib
 plotly
 google-genai
+streamlit-card

@@ -61,10 +61,13 @@ def get_review_data(genre:str, app_name:str, review_sentiment:str):
 
     query = f"""
     SELECT
-    review_text
+    r.id,
+    r.review_text,
+    r.review_response,
+    case when r.review_response='' then False else True end as generate_response
     FROM
     `market-mirror-dev.APP_MARKET_GOLD.T_APP_REVIEWS_DETAIL` a,
-    UNNEST(a.review_text) AS review_text
+    UNNEST(a.review_data) AS r
     WHERE 1=1
     {genre_filter}
     {app_name_filter}
