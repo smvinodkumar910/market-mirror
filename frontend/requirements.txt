@@ -1,6 +1,9 @@
 google-cloud-storage
 google-cloud-bigquery
+google-cloud-bigquery-storage
 streamlit
 db-dtypes
 matplotlib
 plotly
+google-genai
+streamlit-card
