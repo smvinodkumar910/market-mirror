@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 from tools.read_data import get_review_summary
-from frontend.tools.genai_tools import generate_summary
+from tools.genai_tools import generate_summary
 
 
 st.set_page_config(layout="wide")
