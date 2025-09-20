@@ -1,2 +1,7 @@
 kagglehub
 bigframes
+langchain
+langchain-google-vertexai
+langchain-google-community
+langchain-google-genai
+langgraph

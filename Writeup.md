@@ -10,7 +10,7 @@ In this project we are using Mobile Apps as a product and analysing user reviews
 
 ## Data Collection
 
-The project utilizes several publicly available datasets from Kaggle to source app information and user reviews across different platforms. The entire data collection and loading process is automated in the `01_load_data.ipynb` notebook.
+The project utilizes several publicly available datasets from Kaggle to source app information and user reviews across different platforms. The entire data collection and loading process is automated in the [01_load_data.ipynb](https://github.com/smvinodkumar910/market-mirror/blob/main/backend/01_load_data.ipynb) notebook.
 
 **Data Sources:**
 
@@ -119,3 +119,66 @@ After this enrichment, all three platform-specific tables were saved with a unif
 
 The notebook detailing these steps can be found here:
 [backend/04_processing_data_02.ipynb](https://github.com/smvinodkumar910/market-mirror/blob/main/backend/04_processing_data_02.ipynb)
+
+## Semantic Layer
+
+Finally data is avilable for us to aggregate in Gold Layer after being cleaned / processed and enriched with the help of GenAI in previous steps.
+
+**Review Table Aggregation**:
+
+This SQL creates 3 aggregated tables on Reviews table `T_APP_REVIEWS_CLEANED`
+[backend/sql/02_gold_table.sql](https://github.com/smvinodkumar910/market-mirror/blob/main/backend/sql/02_gold_table.sql)
+
+1. APP_MARKET_GOLD.T_APP_REVIEWS_AGG
+    - This table aggregated in the level of APP 
+    - Having summarized information like 
+        - Total number of reviews
+        - Proportion of positive reviews in total number of reviews
+        - Proportion of neutral reviews in total number of reviews
+        - Proportion of negative reviews in total number of reviews
+    
+    - This table will be usefull to quickly analyse which app have high popularity in each genre.
+
+2. APP_MARKET_GOLD.T_APP_REVIEWS_GENRE_LEVEL_SUMMARY
+    - This table aggregates in the level of Genre.
+    - Having summarized information like 
+        - Total number of reviews
+        - Proportion of positive reviews in total number of reviews
+        - Proportion of neutral reviews in total number of reviews
+        - Proportion of negative reviews in total number of reviews
+
+3. APP_MARKET_GOLD.T_APP_REVIEWS_DETAIL
+    - This table having all review_text aggregated to app_name, sentiment and genre level.
+    - This table will be help to create a presentation layer to show the user the review_text and generate response to each user.
+
+## Vector Search
+
+### Embedding app_details
+
+**App Details Table Embedding**
+
+This SQL script creates Embeddings on the `app_description` column in each of the App details table for the platformats Google, Apple and Windows.
+[backend/sql/03_create_embeddings.sql](https://github.com/smvinodkumar910/market-mirror/blob/main/backend/sql/03_create_embeddings.sql)
+
+* Here we are using `ML.GENERATE_EMBEDDING` function using the remote EMBEDDING model created earlier.
+* This function creates Embeddings for the `app_description` field, and the result is stored as 3 separate tables for each platform.
+    1. `T_GOOGLE_APP_DESC_EMBEDDED`
+    2. `T_WINDOWS_APP_DESC_EMBEDDED`
+    3. `T_APPLE_APP_DESC_EMBEDDED`
+
+### Vector Index
+
+This SQL script creates Vector Index on the embeddings created in previous step.
+[backend/sql/04_create_vector_index.sql]
+
+
+* Vector index creaed only on the tables `T_APPLE_APP_DESC_EMBEDDED` and `T_GOOGLE_APP_DESC_EMBEDDED`.
+* Not created on `T_WINDOWS_APP_DESC_EMBEDDED` because of the records count in this tbale less than 5000.
+* Vector indexes created with distance_type as COSINE and index_type as IVF.
+
+So, this embedded table can be utilized to retrive apps which provide similar functionalities across 3 platforms.
+
+
+
+
+
