@@ -21,7 +21,18 @@ We are going to use below 5 Kaggle Datasets for this project.
 2. https://www.kaggle.com/datasets/ramamet4/app-store-apple-data-set-10k-apps
 3. https://www.kaggle.com/datasets/quadeer15sh/windows-store-top-apps-games
 
-**This Notebook explains the steps to load data into BQ as BRONZE LAYER:**
+This Notebook explains the steps to load data into BQ as BRONZE LAYER:
+
 https://github.com/smvinodkumar910/market-mirror/blob/main/backend/01_load_data.ipynb
 
+## Data Processing
+
+### Exploring data
+
+We are exploring the data loaded into BRONZE Layer, clean it, removing unnecessary columns and then loading them into SILVER layer.
+Each step explained in the notebook here:
+
+https://github.com/smvinodkumar910/market-mirror/blob/main/backend/02_explore_data.ipynb
+
+### Data Processing 1
 
