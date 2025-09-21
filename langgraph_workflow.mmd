@@ -1,0 +1,27 @@
+---
+config:
+  flowchart:
+    curve: linear
+---
+graph TD;
+	__start__([<p>__start__</p>]):::first
+	get_google_app_desc(get_google_app_desc)
+	generate_query_embedding(generate_query_embedding)
+	windows_apps_search(windows_apps_search)
+	apple_apps_search(apple_apps_search)
+	get_windows_app_desc(get_windows_app_desc)
+	get_apple_app_desc(get_apple_app_desc)
+	get_comparison_summary(get_comparison_summary)
+	__end__([<p>__end__</p>]):::last
+	__start__ --> get_google_app_desc;
+	apple_apps_search --> get_apple_app_desc;
+	generate_query_embedding --> apple_apps_search;
+	generate_query_embedding --> windows_apps_search;
+	get_apple_app_desc --> get_comparison_summary;
+	get_google_app_desc --> generate_query_embedding;
+	get_windows_app_desc --> get_comparison_summary;
+	windows_apps_search --> get_windows_app_desc;
+	get_comparison_summary --> __end__;
+	classDef default fill:#f2f0ff,line-height:1.2
+	classDef first fill-opacity:0
+	classDef last fill:#bfb6fc
