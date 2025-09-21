@@ -1,6 +1,12 @@
 import streamlit as st
+import os
+from dotenv import load_dotenv
 
-import streamlit as st
+# Construct the path to the .env file
+#dotenv_path = os.path.realpath(os.path.join(os.path.dirname(__file__), '..','.env'))
+
+# Load environment variables from .env file
+#load_dotenv(dotenv_path=dotenv_path)
 
 # Define the pages
 home_page = st.Page("pages/1_home.py", title="Home", icon="🎈")

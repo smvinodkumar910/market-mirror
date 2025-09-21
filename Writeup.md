@@ -178,7 +178,50 @@ This SQL script creates Vector Index on the embeddings created in previous step.
 
 So, this embedded table can be utilized to retrive apps which provide similar functionalities across 3 platforms.
 
+## FronEnd Streamlit App
 
+The frontend of Market Mirror is a multi-page Streamlit application designed to be intuitive and interactive. It provides a user-friendly interface to access the powerful analytics and generative AI capabilities of the backend.
 
+The application consists of four main pages:
 
+### 1. Home Page
 
+This is the landing page of the application. It provides a brief introduction to Market Mirror and its capabilities, and guides the user to navigate to the other pages using the sidebar.
+
+### 2. App Rankings
+
+This page allows users to analyze app performance within a specific category. Users can:
+*   Select an app category from a dropdown.
+*   Use a slider to define the number of top apps to display.
+*   View two interactive charts:
+    *   A horizontal bar chart showing the sentiment breakdown (Positive, Neutral, Negative) for each app.
+    *   A vertical bar chart showing the total number of reviews for each app.
+*   Read an AI-generated summary of the app rankings.
+
+### 3. Review Engagement
+
+This page enables direct interaction with customer reviews. Users can:
+*   Filter reviews by app category, app name, and sentiment.
+*   View the filtered reviews in a data grid.
+*   Select reviews and, with a single click, use a Gemini model to generate a polite and context-aware response to the customer's feedback.
+
+### 4. Competitor Analysis
+
+This is the most powerful feature of the application, providing deep competitive insights through a sophisticated AI workflow.
+
+**How it works:**
+
+1.  The user selects a Google Play Store app to analyze.
+2.  Upon clicking the "Analyze" button, a backend process built with **LangGraph** is triggered.
+
+**Workflow using LangGraph and BigQuery Vector Search:**
+
+*   **Embedding Generation:** The description of the selected Google app is retrieved, and an embedding model (`text-embedding-005`) generates a vector representation of it.
+*   **Vector Similarity Search:** This embedding is used to perform a similarity search against pre-computed vector indexes on the Apple App Store and Windows Store datasets. This is powered by **BigQuery Vector Search** and seamlessly integrated using the `BigQueryVectorStore` component from **LangChain**.
+*   **Information Retrieval:** The top similar apps from the other platforms are identified, and their details are retrieved from BigQuery.
+*   **Comprehensive Analysis with Gemini:** All the gathered information (the original app and its competitors) is passed to a Gemini model. The model generates a comprehensive report that includes:
+    *   A feature-by-feature comparison.
+    *   A summary of advantages and disadvantages.
+    *   A strategic improvement plan for the selected Google app to enhance its market position.
+
+To ensure a smooth user experience, the entire LangGraph workflow is cached using Streamlit's `@st.cache_resource`, which prevents the application from being re-initialized on every interaction, making the analysis fast and efficient.

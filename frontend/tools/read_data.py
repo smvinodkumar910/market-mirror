@@ -47,6 +47,26 @@ def get_app_list_for_prompt():
 
     return df
 
+@st.cache_data
+def get_google_apps_list():
+    client = bigquery.Client()
+
+    query = f"""
+    select 
+    distinct 
+    a.app_name, 
+    a.app_description ,
+    a.app_genre
+    from `market-mirror-dev.APP_MARKET_GOLD.T_GOOGLE_APP_DETAIL_FINAL` a;
+    """
+    query_job = client.query(query)  # Make an API request.
+
+    query_job.result()  # Wait for the job to complete.
+
+    df = query_job.to_dataframe()
+
+    return df
+
 
 
 @st.cache_data
