@@ -1,0 +1,76 @@
+graph TD
+    subgraph Raw Data Sources
+        Kaggle[Kaggle Datasets .csv]
+    end
+
+    subgraph Bronze Layer [BigQuery: APP_MARKET_BRONZE]
+        direction LR
+        GCS[GCS Bucket]
+        BronzeTables((Bronze Tables))
+    end
+
+    subgraph Silver Layer [BigQuery: APP_MARKET_SILVER]
+        direction LR
+        subgraph "Cleaned Tables"
+            T_APP_REVIEWS(T_APP_REVIEWS)
+            T_GOOGLE_DETAILS(T_GOOGLE_APP_DETAILS)
+            T_APPLE_DETAILS(T_APPLE_APP_DETAILS)
+            T_WINDOWS_DETAILS(T_WINDOWS_APP_DETAILS)
+        end
+        subgraph "Enriched Tables"
+            T_APP_REVIEWS_CLEANED(T_APP_REVIEWS_CLEANED)
+            T_GOOGLE_CLEANED(T_GOOGLE_APP_DETAIL_CLEANED)
+            T_WINDOWS_CLEANED(T_WINDOWS_APP_DETAIL_CLEANED)
+            T_APPLE_CLEANED(T_APPLE_APP_DETAIL_CLEANED)
+        end
+    end
+
+    subgraph Gold Layer [BigQuery: APP_MARKET_GOLD]
+        direction LR
+        subgraph "Final Tables"
+            T_GOOGLE_FINAL(T_GOOGLE_APP_DETAIL_FINAL)
+            T_WINDOWS_FINAL(T_WINDOWS_APP_DETAIL_FINAL)
+            T_APPLE_FINAL(T_APPLE_APP_DETAIL_FINAL)
+        end
+        subgraph "Aggregated Tables"
+            T_REVIEWS_AGG(T_APP_REVIEWS_AGG)
+            T_REVIEWS_SUMMARY(T_APP_REVIEWS_GENRE_LEVEL_SUMMARY)
+            T_REVIEWS_DETAIL(T_APP_REVIEWS_DETAIL)
+        end
+        subgraph "Vector Search"
+            T_GOOGLE_EMBED(T_GOOGLE_APP_DESC_EMBEDDED)
+            T_WINDOWS_EMBED(T_WINDOWS_APP_DESC_EMBEDDED)
+            T_APPLE_EMBED(T_APPLE_APP_DESC_EMBEDDED)
+            VectorIndex[Vector Index]
+        end
+    end
+
+    %% Data Flow
+    Kaggle -- "01_load_data.ipynb" --> GCS
+    GCS -- "01_load_data.ipynb" --> BronzeTables
+
+    BronzeTables -- "02_explore_data.ipynb" --> T_APP_REVIEWS
+    BronzeTables -- "02_explore_data.ipynb" --> T_GOOGLE_DETAILS
+    BronzeTables -- "02_explore_data.ipynb" --> T_APPLE_DETAILS
+    BronzeTables -- "02_explore_data.ipynb" --> T_WINDOWS_DETAILS
+
+    T_APP_REVIEWS -- "03_processing_data_01.ipynb <br> (Gemini Enrichment)" --> T_APP_REVIEWS_CLEANED
+
+    T_GOOGLE_DETAILS -- "04_processing_data_02.ipynb <br> (Standardization)" --> T_GOOGLE_CLEANED
+    T_WINDOWS_DETAILS -- "04_processing_data_02.ipynb <br> (Gemini Price Extraction)" --> T_WINDOWS_CLEANED
+    T_APPLE_DETAILS -- "04_processing_data_02.ipynb <br> (Standardization)" --> T_APPLE_CLEANED
+
+    T_GOOGLE_CLEANED --> T_GOOGLE_FINAL
+    T_WINDOWS_CLEANED --> T_WINDOWS_FINAL
+    T_APPLE_CLEANED --> T_APPLE_FINAL
+
+    T_APP_REVIEWS_CLEANED -- "SQL Aggregation" --> T_REVIEWS_AGG
+    T_APP_REVIEWS_CLEANED -- "SQL Aggregation" --> T_REVIEWS_SUMMARY
+    T_APP_REVIEWS_CLEANED -- "SQL Aggregation" --> T_REVIEWS_DETAIL
+
+    T_GOOGLE_FINAL -- "SQL: ML.GENERATE_EMBEDDING" --> T_GOOGLE_EMBED
+    T_WINDOWS_FINAL -- "SQL: ML.GENERATE_EMBEDDING" --> T_WINDOWS_EMBED
+    T_APPLE_FINAL -- "SQL: ML.GENERATE_EMBEDDING" --> T_APPLE_EMBED
+
+    T_GOOGLE_EMBED -- "SQL: CREATE VECTOR INDEX" --> VectorIndex
+    T_APPLE_EMBED -- "SQL: CREATE VECTOR INDEX" --> VectorIndex
