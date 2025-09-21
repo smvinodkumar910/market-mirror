@@ -169,7 +169,7 @@ This SQL script creates Embeddings on the `app_description` column in each of th
 ### Vector Index
 
 This SQL script creates Vector Index on the embeddings created in previous step.
-[backend/sql/04_create_vector_index.sql]
+[backend/sql/04_create_vector_index.sql](https://github.com/smvinodkumar910/market-mirror/blob/main/backend/sql/04_create_vector_index.sql)
 
 
 * Vector index creaed only on the tables `T_APPLE_APP_DESC_EMBEDDED` and `T_GOOGLE_APP_DESC_EMBEDDED`.
